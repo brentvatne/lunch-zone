@@ -10,6 +10,7 @@ module LunchZone
     property :email,                 String, :unique => true
     property :partnerpedia_employee, Boolean
     property :token,                 String
+    property :gravatar_id,           String
 
     def self.find_or_create_from_omniauth(params)
       email = params['info']['email']
@@ -34,15 +35,18 @@ module LunchZone
     end
 
     def self.create_from_omniauth(params)
-      nickname = params['info']['nickname']
-      token    = params['credentials']['token']
-      email    = params['info']['email']
+      nickname    = params['info']['nickname']
+      token       = params['credentials']['token']
+      email       = params['info']['email']
+      gravatar_id = params['extra']['raw_info']['gravatar_id']
+      partnerpedia_employee = is_visible_on_github_org?(nickname)
 
       user = create(
         :email => email,
         :nickname => nickname,
-        :partnerpedia_employee => is_visible_on_github_org?(user),
-        :token => token
+        :partnerpedia_employee => partnerpedia_employee,
+        :token => token,
+        :gravatar_id => gravatar_id
       )
     end
 
