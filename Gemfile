@@ -6,7 +6,7 @@ gem "padrino-helpers", "~> 0.10.6"
 gem 'shotgun', '~> 0.9'
 gem 'sinatra-flash', '~> 0.3.0'
 gem 'omniauth'
-gem 'omniauth-google-oauth2'
+gem 'omniauth-github'
 gem 'thin'
 gem 'coffee-script'
 gem 'therubyracer'

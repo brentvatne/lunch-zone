@@ -1,6 +1,6 @@
 require_relative "../../config/data_mapper"
 
-module StarterApp
+module LunchZone
   class User
     include DataMapper::Resource
 

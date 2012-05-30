@@ -1,6 +1,6 @@
 require_relative '../app'
 
-module StarterApp
+module LunchZone
   class App < Sinatra::Application
 
     get '/auth/:provider/callback' do
