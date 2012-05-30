@@ -9,7 +9,7 @@ gem 'omniauth'
 gem 'omniauth-github'
 gem 'thin'
 gem 'coffee-script'
-gem 'therubyracer'
+gem 'octokit'
 
 # Assets
 gem 'sass', '~> 3.1.14'
@@ -18,7 +18,9 @@ gem 'sass', '~> 3.1.14'
 gem 'rake', '~> 0.9.2.2'
 
 # Others
-gem 'datamapper', '~> 1.2.0'
+gem 'dm-core', '~> 1.2.0'
+gem 'dm-migrations', '~> 1.2.0'
+gem 'dm-validations', '~> 1.2.0'
 gem 'dm-sqlite-adapter', '~> 1.2.0'
 
 group :test do
