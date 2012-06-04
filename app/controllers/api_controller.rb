@@ -1,6 +1,10 @@
+require_relative '../models/user'
+require_relative '../models/restaurant'
+
 module LunchZone
   class App < Sinatra::Application
     get '/api/restaurants' do
+      Restaurant.all.map(&:attributes).to_json
       # [ { :name => 'restaurant name', :id => 1232 }, { ... } ]
     end
 
