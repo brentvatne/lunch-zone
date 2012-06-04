@@ -81,8 +81,26 @@ module LunchZone
     end
 
     describe 'POST /api/users/:nickname/restaurants/:id/:date/not-craving' do
-      it '' do
+      before do
+        User.first.new_craving(Restaurant.first, Date.parse('2012-01-01'))
+      end
 
+      it 'should remove the specified craving if it exists' do
+        Craving.count.should == 1
+
+        restaurant_id = Restaurant.first.id
+        nickname      = User.first.nickname
+
+        date = '2012-01-01'
+        post "/api/users/#{nickname}" +
+             "/restaurants/#{restaurant_id}" +
+             "/#{date}" +
+             "/not-craving"
+
+        last_response.should be_ok
+        parsed_response['success'].should == true
+
+        Craving.count.should == 0
       end
     end
 
