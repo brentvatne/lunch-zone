@@ -3,6 +3,7 @@ require 'padrino-helpers'
 require 'sinatra/flash'
 require 'sass'
 require 'coffee-script'
+require 'active_support'
 require_relative '../config/api_credentials'
 
 module LunchZone

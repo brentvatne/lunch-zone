@@ -10,6 +10,7 @@ gem 'omniauth-github'
 gem 'thin'
 gem 'coffee-script'
 gem 'octokit'
+gem 'activesupport'
 
 # Assets
 gem 'sass', '~> 3.1.14'

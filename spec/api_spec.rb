@@ -8,6 +8,11 @@ module LunchZone
   describe 'service' do
     include Rack::Test::Methods
 
+    let!(:hungryman) { User.create(:nickname => 'hungryman') }
+    let!(:friend)    { User.create(:nickname => 'friend') }
+    let!(:qq_sushi)  { Restaurant.create(:name => 'QQ Sushi') }
+    let!(:memphis)   { Restaurant.create(:name => 'Memphis Grill') }
+
     def app
       App
     end
@@ -17,10 +22,13 @@ module LunchZone
     end
 
     before do
-      User.create(:nickname => 'hungryman')
-      User.create(:nickname => 'friend')
-      Restaurant.create(:name => 'QQ Sushi')
-      Restaurant.create(:name => 'Memphis Grill')
+      app.class_eval do
+        helpers do
+          def current_user
+            User.first(:nickname => 'hungryman')
+          end
+        end
+      end
     end
 
     describe 'GET /api/restaurants' do
@@ -60,14 +68,17 @@ module LunchZone
       end
     end
 
-    describe 'POST /api/users/:nickname/restaurants/:id/:date/craving' do
+    describe 'POST /api/restaurants/:id/:date/craving' do
+      before do
+        app.stubs(:current_user).with(User.first)
+      end
+
       it 'creates a craving for the given user' do
         restaurant_id = Restaurant.first.id
         nickname      = User.first.nickname
 
         date = '2012-01-01'
-        post "/api/users/#{nickname}" +
-             "/restaurants/#{restaurant_id}" +
+        post "/api/restaurants/#{restaurant_id}" +
              "/#{date}" +
              "/craving"
 
@@ -80,8 +91,9 @@ module LunchZone
       end
     end
 
-    describe 'POST /api/users/:nickname/restaurants/:id/:date/not-craving' do
+    describe 'POST /api/restaurants/:id/:date/not-craving' do
       before do
+        app.stubs(:current_user).with(User.first)
         User.first.new_craving(Restaurant.first, Date.parse('2012-01-01'))
       end
 
@@ -92,8 +104,7 @@ module LunchZone
         nickname      = User.first.nickname
 
         date = '2012-01-01'
-        post "/api/users/#{nickname}" +
-             "/restaurants/#{restaurant_id}" +
+        post "/api/restaurants/#{restaurant_id}" +
              "/#{date}" +
              "/not-craving"
 
@@ -106,32 +117,28 @@ module LunchZone
 
     describe 'GET /api/restaurants/:date' do
       before do
-        restaurant_id = Restaurant.first(:name => 'QQ Sushi').id
-        date          = '2012-01-01'
+        restaurant = Restaurant.first(:name => 'QQ Sushi')
+        date       = Date.parse('2012-01-01')
 
-        ['hungryman', 'friend'].each do |nickname|
-          post "/api/users/#{nickname}" +
-               "/restaurants/#{restaurant_id}" +
-               "/#{date}" +
-               "/craving"
-        end
+        hungryman.new_craving(restaurant, date)
+        friend.new_craving(restaurant, date)
       end
 
       it 'returns a list of restaurants including the people who crave it' do
         get '/api/restaurants/on/2012-01-01'
 
-        qq_sushi = parsed_response.detect { |data|
+        qq_sushi_data = parsed_response.detect { |data|
           data['restaurant']['name'] == 'QQ Sushi'
         }
 
-        memphis_grill = parsed_response.detect { |data|
+        memphis_grill_data = parsed_response.detect { |data|
           data['restaurant']['name'] == 'Memphis Grill'
         }
 
-        qq_sushi['users'].length.should      == 2
-        memphis_grill['users'].length.should == 0
+        qq_sushi_data['users'].length.should      == 2
+        memphis_grill_data['users'].length.should == 0
 
-        qq_sushi['users'].first['nickname'].should == 'hungryman'
+        qq_sushi_data['users'].first['nickname'].should == 'hungryman'
       end
     end
   end

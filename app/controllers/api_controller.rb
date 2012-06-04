@@ -39,15 +39,12 @@ module LunchZone
     end
 
     # { :success => true }
-    # (note that this is currently not secure because I am not
-    # verifying it against current user)
-    post '/api/users/:nickname/restaurants/:id/:date/craving' do
-      user       = User.first(:nickname => params[:nickname])
+    post '/api/restaurants/:id/:date/craving' do
       restaurant = Restaurant.get(params[:id])
       date       = Date.parse(params[:date])
 
-      if user && restaurant
-        user.new_craving(restaurant, date)
+      if current_user && restaurant
+        current_user.new_craving(restaurant, date)
         {:success => true}.to_json
       else
         error 404, {:error => 'invalid parameters'}.to_json
@@ -55,15 +52,12 @@ module LunchZone
     end
 
     # { :success => true }
-    # (note that this is currently not secure because I am not
-    # verifying it against current user)
-    post '/api/users/:nickname/restaurants/:id/:date/not-craving' do
-      user       = User.first(:nickname => params[:nickname])
+    post '/api/restaurants/:id/:date/not-craving' do
       restaurant = Restaurant.get(params[:id])
       date       = Date.parse(params[:date])
 
-      if user && restaurant
-        user.cravings.first(:date => date).destroy
+      if current_user && restaurant
+        current_user.cravings.first(:date => date).try(:destroy)
         {:success => true}.to_json
       else
         error 404, {:error => 'invalid parameters'}.to_json
