@@ -1,3 +1,5 @@
+APP_ENV = 'test'
+
 require 'rspec'
 require 'sinatra/base'
 require_relative '../config/data_mapper'

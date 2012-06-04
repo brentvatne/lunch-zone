@@ -26,7 +26,7 @@ module LunchZone
     end
 
     # [ { :name => 'restaurant name', :id => 1232,
-    #     :people => [ {:nickname => '..', # :image => 'image_url' }, { ... }, { ... } ],
+    #     :people => [ {:nickname => '..', # :gravatar_id => 'id' }, { ... }, { ... } ],
     #   { ... } ]
     get '/api/restaurants/:date' do
     end

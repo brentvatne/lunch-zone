@@ -1,4 +1,6 @@
 require 'octokit'
+require_relative "restaurant"
+require_relative "craving"
 require_relative "../../config/data_mapper"
 
 module LunchZone
@@ -11,6 +13,9 @@ module LunchZone
     property :partnerpedia_employee, Boolean
     property :token,                 String
     property :gravatar_id,           String
+
+    has n, :cravings
+    has n, :restaurants, :through => :cravings
 
     def self.find_or_create_from_omniauth(params)
       email = params['info']['email']
@@ -56,6 +61,14 @@ module LunchZone
       }
 
       members.include?(nickname)
+    end
+
+    def new_craving(restaurant, date = Date.today)
+      craving            = Craving.new
+      craving.restaurant = restaurant
+      craving.user       = self
+      craving.date       = date
+      craving.save
     end
 
     def is_partnerpedia_employee?
