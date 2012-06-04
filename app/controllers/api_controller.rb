@@ -39,6 +39,8 @@ module LunchZone
     end
 
     # { :success => true }
+    # (note that this is currently not secure because I am not
+    # verifying it against current user)
     post '/api/users/:nickname/restaurants/:id/:date/craving' do
       user       = User.first(:nickname => params[:nickname])
       restaurant = Restaurant.get(params[:id])
@@ -53,6 +55,8 @@ module LunchZone
     end
 
     # { :success => true }
+    # (note that this is currently not secure because I am not
+    # verifying it against current user)
     post '/api/users/:nickname/restaurants/:id/:date/not-craving' do
       user       = User.first(:nickname => params[:nickname])
       restaurant = Restaurant.get(params[:id])
