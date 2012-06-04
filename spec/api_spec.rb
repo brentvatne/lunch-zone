@@ -41,30 +41,13 @@ module LunchZone
       end
     end
 
-    describe 'GET /api/restaurants/:id' do
-      it 'returns info for the restaurant with the given id' do
-        get "/api/restaurants/#{Restaurant.first.id}"
-
-        last_response.should be_ok
-        parsed_response['name'].should == Restaurant.first.name
-      end
-
-      it 'returns 404 with an error message if not found' do
-        get '/api/restaurants/this-is-so-wrong!!!!'
-
-        last_response.status.should == 404
-        parsed_response['error'].should match(/not found/)
-      end
-    end
-
     describe 'POST /api/restaurants' do
       it 'creates a new restaurant' do
         post '/api/restaurants', { :name => 'Some New One' }.to_json
 
         id = parsed_response['id']
 
-        get "/api/restaurants/#{id}"
-        parsed_response['name'].should == 'Some New One'
+        Restaurant.last.name.should == 'Some New One'
       end
     end
 
@@ -125,14 +108,14 @@ module LunchZone
       end
 
       it 'returns a list of restaurants including the people who crave it' do
-        get '/api/restaurants/on/2012-01-01'
+        get '/api/restaurants/2012-01-01'
 
         qq_sushi_data = parsed_response.detect { |data|
-          data['restaurant']['name'] == 'QQ Sushi'
+          data['name'] == 'QQ Sushi'
         }
 
         memphis_grill_data = parsed_response.detect { |data|
-          data['restaurant']['name'] == 'Memphis Grill'
+          data['name'] == 'Memphis Grill'
         }
 
         qq_sushi_data['users'].length.should      == 2
