@@ -1,5 +1,6 @@
 require_relative '../models/user'
 require_relative '../models/restaurant'
+require 'date'
 
 module LunchZone
   class App < Sinatra::Application
@@ -28,15 +29,31 @@ module LunchZone
     # [ { :name => 'restaurant name', :id => 1232,
     #     :people => [ {:nickname => '..', # :gravatar_id => 'id' }, { ... }, { ... } ],
     #   { ... } ]
-    get '/api/restaurants/:date' do
+    get '/api/restaurants/on/:date' do
+      restaurant_data = Restaurant.all_for_date(Date.parse(params[:date]))
+
+      restaurant_data.map { |data|
+        { :restaurant => data[:restaurant].public_attributes,
+          :users      => data[:users].map(&:public_attributes) }
+      }.to_json
     end
 
-    post '/api/restaurants/:id/willing' do
-      # { :success => true }
+    # { :success => true }
+    post '/api/users/:nickname/restaurants/:id/:date/craving' do
+      user       = User.first(:nickname => params[:nickname])
+      restaurant = Restaurant.get(params[:id])
+      date       = Date.parse(params[:date])
+
+      if user && restaurant
+        user.new_craving(restaurant, date)
+        {:success => true}.to_json
+      else
+        error 404, {:error => 'invalid parameters'}.to_json
+      end
     end
 
-    post '/api/restaurants/:id/not-willing' do
-      # { :success => true }
+    # { :success => true }
+    post '/api/users/:nickname/restaurants/:id/:date/not-craving' do
     end
   end
 end

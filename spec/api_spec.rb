@@ -17,6 +17,8 @@ module LunchZone
     end
 
     before do
+      User.create(:nickname => 'hungryman')
+      User.create(:nickname => 'friend')
       Restaurant.create(:name => 'QQ Sushi')
       Restaurant.create(:name => 'Memphis Grill')
     end
@@ -55,6 +57,63 @@ module LunchZone
 
         get "/api/restaurants/#{id}"
         parsed_response['name'].should == 'Some New One'
+      end
+    end
+
+    describe 'POST /api/users/:nickname/restaurants/:id/:date/craving' do
+      it 'creates a craving for the given user' do
+        restaurant_id = Restaurant.first.id
+        nickname      = User.first.nickname
+
+        date = '2012-01-01'
+        post "/api/users/#{nickname}" +
+             "/restaurants/#{restaurant_id}" +
+             "/#{date}" +
+             "/craving"
+
+        last_response.should be_ok
+        parsed_response['success'].should == true
+
+        Craving.last.user.should       == User.first
+        Craving.last.restaurant.should == Restaurant.first
+        Craving.last.date.should       == Date.parse(date)
+      end
+    end
+
+    describe 'POST /api/users/:nickname/restaurants/:id/:date/not-craving' do
+      it '' do
+
+      end
+    end
+
+    describe 'GET /api/restaurants/:date' do
+      before do
+        restaurant_id = Restaurant.first(:name => 'QQ Sushi').id
+        date          = '2012-01-01'
+
+        ['hungryman', 'friend'].each do |nickname|
+          post "/api/users/#{nickname}" +
+               "/restaurants/#{restaurant_id}" +
+               "/#{date}" +
+               "/craving"
+        end
+      end
+
+      it 'returns a list of restaurants including the people who crave it' do
+        get '/api/restaurants/on/2012-01-01'
+
+        qq_sushi = parsed_response.detect { |data|
+          data['restaurant']['name'] == 'QQ Sushi'
+        }
+
+        memphis_grill = parsed_response.detect { |data|
+          data['restaurant']['name'] == 'Memphis Grill'
+        }
+
+        qq_sushi['users'].length.should      == 2
+        memphis_grill['users'].length.should == 0
+
+        qq_sushi['users'].first['nickname'].should == 'hungryman'
       end
     end
   end

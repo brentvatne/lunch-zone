@@ -1,3 +1,4 @@
+require 'json'
 require 'octokit'
 require_relative "restaurant"
 require_relative "craving"
@@ -77,6 +78,17 @@ module LunchZone
 
     def gravatar_url
       # generate this from the email
+    end
+
+    def public_attributes
+      publishable_attributes = attributes
+      publishable_attributes.delete(:partnerpedia_employee)
+      publishable_attributes.delete(:token)
+      publishable_attributes
+    end
+
+    def to_json
+      public_attributes.to_json
     end
   end
 end

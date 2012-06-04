@@ -11,5 +11,13 @@ module LunchZone
 
     belongs_to :user
     belongs_to :restaurant
+
+    def public_attributes
+      attributes
+    end
+
+    def to_json
+      public_attributes.to_json
+    end
   end
 end
