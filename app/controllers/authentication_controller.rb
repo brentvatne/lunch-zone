@@ -7,10 +7,12 @@ module LunchZone
       user          = User.find_or_create_from_omniauth(omniauth_params)
       session[:uid] = user.email
 
-      user.attributes.inspect
-      user.reload
+      if user.is_partnerpedia_employee?
+        redirect to('/')
+      else
+        redirect to('/not-an-employee')
+      end
 
-      redirect to('/')
     end
 
     get '/auth/failure' do
