@@ -7,11 +7,15 @@ module LunchZone
 
     # [ { :name => 'restaurant name', :id => 1232 }, { ... } ]
     get '/api/restaurants' do
+      content_type 'application/json', :charset => 'utf-8'
+
       Restaurant.all.map(&:attributes).to_json
     end
 
     # { :name => 'some name', :id => 123 }
     post '/api/restaurants' do
+      content_type 'application/json', :charset => 'utf-8'
+
       Restaurant.create(:name => json_params[:name]).attributes.to_json
     end
 
@@ -19,6 +23,8 @@ module LunchZone
     #     :users => [ {:nickname => '..', # :gravatar_id => 'id' }, { ... }, { ... } ],
     #   { ... } ]
     get '/api/restaurants/:date' do
+      content_type 'application/json', :charset => 'utf-8'
+
       restaurant_data = Restaurant.all_for_date(Date.parse(params[:date]))
 
       restaurant_data.map { |data|
@@ -30,6 +36,8 @@ module LunchZone
 
     # { :success => true }
     post '/api/restaurants/:id/:date/craving' do
+      content_type 'application/json', :charset => 'utf-8'
+
       restaurant = Restaurant.get(params[:id])
       date       = Date.parse(params[:date])
 
@@ -43,6 +51,8 @@ module LunchZone
 
     # { :success => true }
     post '/api/restaurants/:id/:date/not-craving' do
+      content_type 'application/json', :charset => 'utf-8'
+
       restaurant = Restaurant.get(params[:id])
       date       = Date.parse(params[:date])
 

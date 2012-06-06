@@ -1,5 +1,6 @@
-<h1>Home</h1>
+<script src="/javascripts/application.js"></script>
 
-<p>LunchZone</p>
-
-<p><a href="/auth/github" class="button big">Sign in using your Github account</a></p>
+<script type="text/javascript">
+  window.LunchZone = window.LunchZone || {};
+  window.LunchZone.CurrentUser =  <%= current_user.to_json %>;
+</script>

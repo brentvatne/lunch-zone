@@ -10,16 +10,7 @@ module LunchZone
       user.attributes.inspect
       user.reload
 
-      if user.is_partnerpedia_employee?
-        "is employee!"
-      else
-        "is not employee!"
-      end
-      # **********************************
-      # Uncomment out the following line and fill in the path that you
-      # would like to redirect to when the user has successfully logged in:
-      #
-      # redirect to('/some_signed_in_path')
+      redirect to('/')
     end
 
     get '/auth/failure' do
