@@ -57,7 +57,7 @@ module LunchZone
       date       = Date.parse(json_params[:date])
 
       if current_user && restaurant
-        current_user.cravings.first(:date => date).try(:destroy)
+        current_user.cravings.first(:date => date, :restaurant_id => params[:id]).try(:destroy)
         {:success => true}.to_json
       else
         error 404, {:error => 'invalid parameters'}.to_json
