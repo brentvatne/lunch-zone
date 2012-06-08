@@ -35,12 +35,9 @@ module LunchZone
 
     private
 
-    # Instantiates the API client and makes it available to the local thread,
-    # or initiates the authroization process if the user is not already
-    # authorized
     def authenticate
       if user_has_session_cookie? and user_in_database?
-        Thread.current['uid'] = session[:uid]
+        # good
       else
         unless authentication_in_progress?
           redirect '/auth/google_oauth2', 303

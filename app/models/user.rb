@@ -20,7 +20,7 @@ module LunchZone
 
     def self.find_or_create_from_omniauth(params)
       email = params['info']['email']
-      user  = get(:email => email)
+      user  = first(:email => email)
 
       if user
         update_employee_status(user)
