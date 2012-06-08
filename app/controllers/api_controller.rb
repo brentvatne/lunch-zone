@@ -35,11 +35,11 @@ module LunchZone
     end
 
     # { :success => true }
-    post '/api/restaurants/:id/:date/craving' do
+    post '/api/restaurants/:id/craving' do
       content_type 'application/json', :charset => 'utf-8'
 
       restaurant = Restaurant.get(params[:id])
-      date       = Date.parse(params[:date])
+      date       = Date.parse(json_params[:date])
 
       if current_user && restaurant
         current_user.new_craving(restaurant, date)
@@ -50,11 +50,11 @@ module LunchZone
     end
 
     # { :success => true }
-    post '/api/restaurants/:id/:date/not-craving' do
+    post '/api/restaurants/:id/not-craving' do
       content_type 'application/json', :charset => 'utf-8'
 
       restaurant = Restaurant.get(params[:id])
-      date       = Date.parse(params[:date])
+      date       = Date.parse(json_params[:date])
 
       if current_user && restaurant
         current_user.cravings.first(:date => date).try(:destroy)
