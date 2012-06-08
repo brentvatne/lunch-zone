@@ -5,7 +5,7 @@ module LunchZone
 
     get '/auth/:provider/callback' do
       user          = User.find_or_create_from_omniauth(omniauth_params)
-      session[:uid] = user.email
+      session[:uid] = user.nickname
 
       if user.is_partnerpedia_employee?
         redirect to('/')
@@ -54,7 +54,7 @@ module LunchZone
     end
 
     def current_user
-      @current_user ||= User.first(:email => session[:uid])
+      @current_user ||= User.first(:nickname => session[:uid])
     end
 
     # Private: Examines the path to determine if authorization is taking place

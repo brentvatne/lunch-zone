@@ -19,8 +19,8 @@ module LunchZone
     has n, :restaurants, :through => :cravings
 
     def self.find_or_create_from_omniauth(params)
-      email = params['info']['email']
-      user  = first(:email => email)
+      nickname = params['info']['nickname']
+      user  = first(:nickname => nickname)
 
       if user
         update_employee_status(user)
@@ -47,7 +47,7 @@ module LunchZone
       gravatar_id = params['extra']['raw_info']['gravatar_id']
       partnerpedia_employee = is_visible_on_github_org?(nickname)
 
-      user = create(
+      create(
         :email => email,
         :nickname => nickname,
         :partnerpedia_employee => partnerpedia_employee,
