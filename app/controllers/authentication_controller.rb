@@ -22,7 +22,7 @@ module LunchZone
 
     # Logs the user out by resetting their UID
     get '/sign_out' do
-      session[:uid]  = ""
+      session.clear
       flash[:notice] = "You have been signed out! See you again soon."
       redirect to('/')
     end
@@ -37,10 +37,10 @@ module LunchZone
 
     def authenticate
       if user_has_session_cookie? and user_in_database?
-        # good
+        current_user
       else
         unless authentication_in_progress?
-          redirect '/auth/google_oauth2', 303
+          redirect '/auth/github', 303
         end
       end
     end
