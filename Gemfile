@@ -11,6 +11,7 @@ gem 'thin'
 gem 'coffee-script'
 gem 'octokit'
 gem 'activesupport'
+gem 'therubyracer'
 
 # Assets
 gem 'sass', '~> 3.1.14'
